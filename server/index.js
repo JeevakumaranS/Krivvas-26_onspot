@@ -43,6 +43,13 @@ app.use(
 app.use(express.json());
 app.use("/uploads", express.static(uploadsDir));
 
+app.get("/", (_req, res) => {
+  res.json({
+    message: "Onspot backend is running.",
+    health: "/api/health",
+  });
+});
+
 function mapEventRow(row) {
   return {
     id: row.id,
