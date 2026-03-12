@@ -1,12 +1,31 @@
+const fs = require("fs");
+const path = require("path");
 const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 
+function buildSslConfig() {
+  const sslEnabled = (process.env.DB_ENABLE_SSL || process.env.TIDB_ENABLE_SSL || "").toLowerCase() === "true";
+
+  if (!sslEnabled) {
+    return undefined;
+  }
+
+  const caPath = process.env.DB_CA_PATH || process.env.TIDB_CA_PATH;
+  const resolvedCaPath = caPath ? path.resolve(__dirname, "..", caPath) : null;
+
+  return {
+    minVersion: "TLSv1.2",
+    ca: resolvedCaPath ? fs.readFileSync(resolvedCaPath) : undefined,
+  };
+}
+
 const pool = mysql.createPool({
-  host: process.env.mysql.railway.internal,
-  port: Number(process.env.MYSQLPORT || 3306),
-  user: process.env.root,
-  password: process.env.xNHUECKNXUZovIBkyWQodAEbKPqCyyxu,
-  database: process.env.railway,
+  host: process.env.DB_HOST || process.env.MYSQLHOST || "127.0.0.1",
+  port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),
+  user: process.env.DB_USER || process.env.DB_USERNAME || process.env.MYSQLUSER || "root",
+  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || "",
+  database: process.env.DB_NAME || process.env.DB_DATABASE || process.env.MYSQLDATABASE || "onspot",
+  ssl: buildSslConfig(),
   waitForConnections: true,
   connectionLimit: 10,
   namedPlaceholders: true,
