@@ -9,11 +9,6 @@ const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const ExcelJS = require("exceljs");
-const { initDatabase } = require("./db");
-
-initDatabase()
-  .then(() => console.log("Database ready"))
-  .catch(console.error);
 const db = require("./src/db");
 const { requireAdmin } = require("./middleware/auth");
 const { mapRegistrationRow } = require("./src/utils");
