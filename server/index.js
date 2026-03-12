@@ -15,7 +15,10 @@ const { mapRegistrationRow } = require("./src/utils");
 
 const app = express();
 const port = process.env.PORT || 4000;
-const clientUrl = (process.env.CLIENT_URL || "http://localhost:5173").replace(/\/+$/, "");
+const clientUrl = (process.env.CLIENT_URL || "http://localhost:5173")
+  .trim()
+  .replace(/^['"]|['"]$/g, "")
+  .replace(/\/+$/, "");
 const uploadsDir = path.join(__dirname, "uploads");
 const phonePattern = /^\d{10}$/;
 
